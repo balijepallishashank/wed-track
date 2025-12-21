@@ -1,8 +1,8 @@
 import React from "react"
 
  function DashboardProvider({children}: {children: React.ReactNode}){
-    return ( <div><DashboardProvider>{children}</DashboardProvider>
+    return ( <div>{children}
     </div>
  )}
 
- export default DashboardProvider
+ export default DashboardProvider;
