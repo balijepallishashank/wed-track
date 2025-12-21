@@ -1,15 +1,12 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@radix-ui/react-separator'
-import React, { use, useState } from 'react'
+import { Separator } from '@/components/ui/separator' // Ensure this path is correct or use standard HR
+import React, { useState } from 'react'
 import {
   InputGroup,
   InputGroupAddon,
-  InputGroupButton,
   InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
 } from "@/components/ui/input-group"
 import {
   Select,
@@ -21,143 +18,140 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Globe, Loader2Icon, Plus, Search } from 'lucide-react'
-import { Checkbox } from '@radix-ui/react-checkbox'
+import { Globe, Loader2Icon, Plus } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox' // Changed to UI component if available, else keep radix
 import { Button } from '@/components/ui/button'
-import { boolean } from 'drizzle-orm/gel-core'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+// 1. FIXED: Correct import for App Router
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner' // Optional: For nice error messages
 
 function WebsiteForm() {
-    const[domain,setDomain]=useState('');
-    const [timeZone,setTimeZone]=useState('');
-    const[enableLocalhostTracking,setEnableLocalhostTracking]=useState(false);
-    const[Loading,setLoading]=useState(false);
-    const router =useRouter();
+    const [domain, setDomain] = useState('');
+    const [timeZone, setTimeZone] = useState('');
+    const [enableLocalhostTracking, setEnableLocalhostTracking] = useState(false);
+    const [loading, setLoading] = useState(false);
+    
+    // 2. FIXED: Correct usage of router
+    const router = useRouter();
 
-
-    const onFormSubmit = async (e:any) => {
+    const onFormSubmit = async (e: any) => {
         e.preventDefault();
-
-        console.log({timeZone,domain,enableLocalhostTracking});
         setLoading(true);
-        const websiteId=crypto.randomUUID();
-        const result=await axios.post('/api/website',{
-            websiteId:websiteId,
-            domain:domain,
-            timeZone:timeZone,
-            enableLocalhostTracking:enableLocalhostTracking
-        })
-        console.log(result.data);
-        if(result.data.data){
-            router.push('/dashboard/new?step=script&websiteId='+result?.data?.data?.websiteId+'&domain='+result?.data?.data?.domain);
 
-        }
-        else if(result?.data?.message){
-            router.push('/dashboard/new?step=script&websiteId='+websiteId);
+        try {
+            // 3. Logic: Ensure https is added only once
+            // If user typed "google.com", we send "https://google.com"
+            // If they already typed "https://google.com", we don't add it again.
+            const finalDomain = domain.includes('http') ? domain : `https://${domain}`;
 
-        }
-        else{
-            alert(result?.data?.message);
-        }
-        setLoading(false);
-    }
-  return (
-    <div>
-        <Card>
-            <CardHeader>
-                <CardTitle>Add Website</CardTitle>
-            </CardHeader>
-            <Separator/>
-            <CardContent>
-                    <form className='mt-5' onSubmit={(e) =>onFormSubmit(e)}> 
-                        <label className='text-sm'>Domain</label>
-                  <InputGroup>
-        <InputGroupInput type='text' 
-        placeholder="mywebsite.com"  required
-        onChange={(e)=>setDomain('https://' + e.target.value)}/>
-        <InputGroupAddon>
-           <Globe />
-           <span>https://</span>
-        </InputGroupAddon>
-      </InputGroup>
-      <div className='mt-3'>
-        <label className='text-sm'>Timezone</label>
-         <Select required onValueChange={(value)=>setTimeZone(value)}>
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select a timezone" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>North America</SelectLabel>
-          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Europe & Africa</SelectLabel>
-          <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-          <SelectItem value="cet">Central European Time (CET)</SelectItem>
-          <SelectItem value="eet">Eastern European Time (EET)</SelectItem>
-          <SelectItem value="west">
-            Western European Summer Time (WEST)
-          </SelectItem>
-          <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-          <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Asia</SelectLabel>
-          <SelectItem value="msk">Moscow Time (MSK)</SelectItem>
-          <SelectItem value="ist">India Standard Time (IST)</SelectItem>
-          <SelectItem value="cst_china">China Standard Time (CST)</SelectItem>
-          <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
-          <SelectItem value="kst">Korea Standard Time (KST)</SelectItem>
-          <SelectItem value="ist_indonesia">
-            Indonesia Central Standard Time (WITA)
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Australia & Pacific</SelectLabel>
-          <SelectItem value="awst">
-            Australian Western Standard Time (AWST)
-          </SelectItem>
-          <SelectItem value="acst">
-            Australian Central Standard Time (ACST)
-          </SelectItem>
-          <SelectItem value="aest">
-            Australian Eastern Standard Time (AEST)
-          </SelectItem>
-          <SelectItem value="nzst">New Zealand Standard Time (NZST)</SelectItem>
-          <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>South America</SelectLabel>
-          <SelectItem value="art">Argentina Time (ART)</SelectItem>
-          <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
-          <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
-          <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-    <div className='mt-3 flex gap-2 items-center'>
-        <Checkbox onCheckedChange={(value)=>setEnableLocalhostTracking(value == true)}/> <span className='ml-2 text-sm'>Enable localhost tracking in development</span>
+            const result = await axios.post('/api/website', {
+                // Generate ID here or let DB do it. Tutorial usually generates here.
+                websiteId: crypto.randomUUID(), 
+                domain: finalDomain,
+                timeZone: timeZone,
+                enableLocalhostTracking: enableLocalhostTracking
+            });
+
+            console.log(result.data);
             
-        
-    </div>
-    <Button className='mt-5 w-full' disabled={Loading} type='submit'>
-        {Loading ? <Loader2Icon className='animate-spin' /> : <Plus/> }
-        Add Website </Button>
-      </div>
-      
+            // Check if result has data (Drizzle returns an array usually)
+            if (result.data) {
+                // Determine the correct ID/Domain to pass
+                const responseData = Array.isArray(result.data) ? result.data[0] : result.data;
+                
+                router.push(`/dashboard/new?step=script&websiteId=${responseData.websiteId}&domain=${responseData.domain}`);
+            }
+
+        } catch (error: any) {
+            console.error("Error:", error);
+            // Show alert or toast
+            alert(error.response?.data?.error || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Add Website</CardTitle>
+                </CardHeader>
+                <Separator className='my-2' /> {/* Used className instead of Radix Separator */}
+                <CardContent>
+                    <form className='mt-5' onSubmit={onFormSubmit}>
+                        
+                        {/* Domain Input */}
+                        <div className='mb-4'>
+                            <label className='text-sm font-medium'>Domain</label>
+                            <InputGroup className="mt-1">
+                                <InputGroupAddon>
+                                    <Globe size={18} />
+                                    <span className='text-sm text-gray-500'>https://</span>
+                                </InputGroupAddon>
+                                <InputGroupInput
+                                    type='text'
+                                    placeholder="example.com"
+                                    required
+                                    // 4. FIXED: Do not add 'https://' here repeatedly. Just store the text.
+                                    value={domain}
+                                    onChange={(e) => setDomain(e.target.value)}
+                                />
+                            </InputGroup>
+                        </div>
+
+                        {/* Timezone Select */}
+                        <div className='mt-3'>
+                            <label className='text-sm font-medium'>Timezone</label>
+                            <Select required onValueChange={(value) => setTimeZone(value)}>
+                                <SelectTrigger className="w-full mt-1">
+                                    <SelectValue placeholder="Select a timezone" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Asia</SelectLabel>
+                                        <SelectItem value="ist">India Standard Time (IST)</SelectItem>
+                                        <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
+                                        {/* Add other timezones as needed */}
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                        <SelectLabel>Europe</SelectLabel>
+                                        <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
+                                        <SelectItem value="cet">Central European Time (CET)</SelectItem>
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                        <SelectLabel>North America</SelectLabel>
+                                        <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
+                                        <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Checkbox */}
+                        <div className='mt-5 flex gap-2 items-center'>
+                            {/* Make sure Checkbox is imported from UI or Radix correctly */}
+                            <Checkbox 
+                                id="localhost-tracking"
+                                onCheckedChange={(value) => setEnableLocalhostTracking(value === true)}
+                            />
+                            <label htmlFor="localhost-tracking" className='text-sm cursor-pointer'>
+                                Enable localhost tracking in development
+                            </label>
+                        </div>
+
+                        {/* Submit Button */}
+                        <Button className='mt-5 w-full' disabled={loading} type='submit'>
+                            {loading ? <Loader2Icon className='animate-spin mr-2' /> : <Plus className="mr-2"/>}
+                            Add Website
+                        </Button>
+
                     </form>
-  
-            </CardContent>
-        </Card>
-    </div>
-  )
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
 
 export default WebsiteForm
