@@ -5,6 +5,7 @@ import { usersTable } from "@/configs/schema";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(req: NextRequest) {
+    console.log(" API /api/user HIT");
     try {
         const user = await currentUser();
 
