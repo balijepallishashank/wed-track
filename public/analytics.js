@@ -5,11 +5,25 @@
     return Date.now().toString(36) +Math.random().toString(36).substr(2,9);
   }
 
+const session_duration = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+const now = Date.now();
+let visitorId = localStorage.getItem('webtrack_visitor_id');
+let sessionTime = localStorage.getItem('webtrack_session_time');
 
-  let visitorId = localStorage.getItem('webtrack_visitor_id');
-if (!visitorId) {
+if (!visitorId || (now - sessionTime) > session_duration) {
+    
+    if (visitorId) {
+        localStorage.removeItem('webtrack_visitor_id');
+        localStorage.removeItem('webtrack_session_time');
+    }
+
     visitorId = generateUUID();
     localStorage.setItem('webtrack_visitor_id', visitorId);
+    localStorage.setItem('webtrack_session_time', now);
+}
+
+else{
+  console.log("Existing Session");
 }
 
   const script = document.currentScript;
@@ -78,10 +92,11 @@ const RefParama= window.location.href.split('?')[1] || '';
         domain,
         exitTime: exitTime,
         totalActiveTime: totalActiveTime,
-        visitorId:visitorId
+        visitorId:visitorId,
+        exitUrl:window.location.href
     })
 })
-localStorage.clear();
+//localStorage.clear();
 
  }
 

@@ -41,7 +41,15 @@ function WebsiteCard({ websiteInfo }: Props) {
 
       <CardContent>
         <ChartContainer config={chartConfig} className="h-20 w-full">
-          <AreaChart data={chartData}>
+          <AreaChart 
+          data={chartData}>
+          accessibilityLayer
+          margin={{
+            left:12,
+            right:12,
+            top:8,
+            bottom:8,
+          }}
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="hourLabel"
@@ -64,7 +72,7 @@ function WebsiteCard({ websiteInfo }: Props) {
         </ChartContainer>
 
         <h2 className="text-sm mt-2">
-          <strong>{websiteInfo.analytics.last24hVisitors}</strong> Visitors
+          <strong>{websiteInfo.analytics.totalVisitors}</strong> Visitors
         </h2>
       </CardContent>
     </Card>

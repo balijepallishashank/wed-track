@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { WebsiteType } from "@/configs/type" // Ensure this path matches your file structure
 // Note: WebsiteInfoType might need to be imported from your types file, not the route
 import { WebsiteInfoType } from "@/app/api/website/route" 
+import { format } from "date-fns"
 
 function Dashboard() {
   // Use 'any' temporarily if WebsiteInfoType gives trouble, or ensure the type is correct
@@ -22,7 +23,8 @@ function Dashboard() {
 
   const GetUserWebsites = async () => {
     setLoading(true)
-    const result = await axios.get("/api/website")
+    const today = format(new Date(),'yyy-MM-dd')
+    const result = await axios.get("/api/website?from="+today +'&to' + today);
     setWebsiteList(result.data)
     setLoading(false)
   }
