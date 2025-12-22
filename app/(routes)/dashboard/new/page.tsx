@@ -1,20 +1,30 @@
-import { ArrowLeft } from 'lucide-react';
-import React from 'react'
-import { Button } from '@/components/ui/button';
-import WebsiteForm from './_components/WebsiteForm';
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import WebsiteForm from "./_components/WebsiteForm"
 
-function AddWebsite(){
+function AddWebsite() {
+  return (
+    <div className="mt-10">
+      <Link
+        href="/dashboard"
+        className="flex items-center gap-2 text-gray-500"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </Link>
 
-return(
-    <div className='flex flex-col justify-center items-center mt-10'>
-        <div className='max-w-lg flex flex-col items-start w-full'>
-            <Button variant={'outline'}> <ArrowLeft/>Dashboard</Button>
+      <div className="mt-8 max-w-xl">
+        <h2 className="font-bold text-2xl">Add New Website</h2>
+        <p className="text-gray-500 mt-2">
+          Add your website domain to start tracking analytics
+        </p>
+
+        <div className="mt-6">
+          <WebsiteForm />
         </div>
-        <div className='mt-10 w-full max-w-lg'>
-            <WebsiteForm />
-        </div>
+      </div>
     </div>
-
-)
+  )
 }
-export default AddWebsite;
+
+export default AddWebsite

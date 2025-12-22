@@ -1,77 +1,74 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { WebsiteType } from '@/configs/type'
-import { Globe } from 'lucide-react'
-import React from 'react'
+"use client"
+
+import { WebsiteInfoType } from "@/app/api/website/route"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import { Globe } from "lucide-react"
+import React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
+
+type Props = {
+  websiteInfo: WebsiteInfoType
+}
+
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  visitors: {
+    label: "Visitors",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
-type Props = {
-    website: WebsiteType
-}
+function WebsiteCard({ websiteInfo }: Props) {
+  const chartData = websiteInfo.analytics.hourlyVisitors
 
-function WebsiteCard({ website }: Props) {
-    return (
-        <div>
-            <Card>
-                <CardHeader>
-                <CardTitle>
-
-            
-                
-
-   
-            <div className='flex gap-2 items-center'>
-                <Globe className='h-8 w-8 p-2 rounded-md bd-primary text-white' />
-            <h2 className='font-bold text-lg'>
-                {website.domain.replace('http://','')}
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <div className="flex gap-2 items-center">
+            <Globe className="h-8 w-8 p-2 rounded-md bg-primary text-white" />
+            <h2 className="font-bold text-lg">
+              {websiteInfo.website.domain.replace("https://", "")}
             </h2>
-            </div>
-               </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig} className='max-h-20 w-full'>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-           
+          </div>
+        </CardTitle>
+      </CardHeader>
 
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-20 w-full">
+          <AreaChart data={chartData}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="hourLabel"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="count"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-primary)"
               fillOpacity={0.4}
               stroke="var(--color-primary)"
             />
           </AreaChart>
         </ChartContainer>
-        <h2 className='text-sm mt-1'><strong>24</strong>Visitors</h2>
-                </CardContent>
-            </Card>
-        </div>
-    )
+
+        <h2 className="text-sm mt-2">
+          <strong>{websiteInfo.analytics.last24hVisitors}</strong> Visitors
+        </h2>
+      </CardContent>
+    </Card>
+  )
 }
 
 export default WebsiteCard

@@ -5,12 +5,15 @@ import axios from "axios"
 import Link from "next/link"
 import Image from "next/image"
 import React, { useEffect, useState } from "react"
-import WebsiteCard from "./dashboard/_components/WebsiteCard"
+import WebsiteCard from "./_components/WebsiteCard"
 import { Skeleton } from "@/components/ui/skeleton"
-import { WebsiteType } from "@/configs/type"
+import { WebsiteType } from "@/configs/type" // Ensure this path matches your file structure
+// Note: WebsiteInfoType might need to be imported from your types file, not the route
+import { WebsiteInfoType } from "@/app/api/website/route" 
 
 function Dashboard() {
-  const [websiteList, setWebsiteList] = useState<WebsiteType[]>([])
+  // Use 'any' temporarily if WebsiteInfoType gives trouble, or ensure the type is correct
+  const [websiteList, setWebsiteList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -48,9 +51,9 @@ function Dashboard() {
       )}
 
       {!loading && websiteList.length === 0 && (
-        <div className="flex flex-col justify-center items-center gap-4 p-8 border-dashed rounded-2xl mt-5">
+        <div className="flex flex-col justify-center items-center gap-4 p-8 border-dashed border-2 border-gray-200 rounded-2xl mt-5">
           <Image src="/website.png" alt="Website" width={100} height={100} />
-          <h2>You don't have any websites added for tracking!</h2>
+          <h2 className="text-gray-500">You don't have any websites added for tracking!</h2>
           <Link href={"/dashboard/new"}>
             <Button>+ Website</Button>
           </Link>
@@ -60,7 +63,8 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 xl:grid-cols-3 mt-5">
         {!loading &&
           websiteList.map((website, index) => (
-            <WebsiteCard key={index} website={website} />
+            
+            <WebsiteCard key={index} websiteInfo={website} />
           ))}
       </div>
     </div>
