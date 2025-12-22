@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         city: geoInfo?.city,
         region: geoInfo?.region,
         country: geoInfo?.country,
+        countryCode:geoInfo.countryCode,
         ipAddress: ip || '',
         refParams: body.refParams,
       }).returning();
