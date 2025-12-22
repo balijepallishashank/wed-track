@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         city: geoInfo?.city,
         region: geoInfo?.region,
         country: geoInfo?.country,
+        countryCode:geoInfo.countryCode,
         ipAddress: ip || '',
         refParams: body.refParams,
       }).returning();
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
         .set({
             exitTime: body.exitTime,
             totalActiveTime: body.totalActiveTime,
+            exitUrl:body.exitUrl,
         })
         .where(eq(pageViewTable.visitorId, body.visitorId))
         .returning();
