@@ -1,76 +1,74 @@
 "use client"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import React, { useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import axios from 'axios'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
-import { Button } from "@/components/ui/button"
-import axios from "axios"
-import Link from "next/link"
-import Image from "next/image"
-import React, { useEffect, useState } from "react"
-import WebsiteCard from "./_components/WebsiteCard"
-import { Skeleton } from "@/components/ui/skeleton"
-import { WebsiteType } from "@/configs/type" // Ensure this path matches your file structure
-// Note: WebsiteInfoType might need to be imported from your types file, not the route
-import { WebsiteInfoType } from "@/app/api/website/route" 
-import { format } from "date-fns"
+function AddNewWebsite() {
+  const [domain, setDomain] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-function Dashboard() {
-  // Use 'any' temporarily if WebsiteInfoType gives trouble, or ensure the type is correct
-  const [websiteList, setWebsiteList] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
+  const onCreateWebsite = async () => {
+      // Basic validation
+      if(!domain || domain.length < 3) {
+        toast.error("Please enter a valid domain");
+        return;
+      }
 
-  useEffect(() => {
-    GetUserWebsites()
-  }, [])
-
-  const GetUserWebsites = async () => {
-    setLoading(true)
-    const today = format(new Date(),'yyy-MM-dd')
-    const result = await axios.get("/api/website?from="+today +'&to' + today);
-    setWebsiteList(result.data)
-    setLoading(false)
+      setLoading(true);
+      try {
+          await axios.post('/api/website', {
+              domain: domain,
+              active: true 
+          });
+          toast.success("Website Created Successfully!");
+          router.replace('/dashboard');
+      } catch(e) {
+          console.error(e);
+          toast.error("Error creating website");
+      } finally {
+          setLoading(false);
+      }
   }
 
   return (
-    <div className="mt-8">
-      <div className="flex justify-between items-center">
-        <h2 className="font-bold text-xl">My Website</h2>
-        <Link href={"/dashboard/new"}>
-          <Button>+ Website</Button>
-        </Link>
-      </div>
-
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 w-full">
-          {[1, 2, 3, 4].map((item, index) => (
-            <div className="p-4" key={index}>
-              <div className="flex gap-2 items-center">
-                <Skeleton className="h-8 w-8 rounded-sm" />
-                <Skeleton className="h-4 w-1/2 rounded-sm" />
-              </div>
-              <Skeleton className="h-20 w-full mt-4" />
+    <div className='flex justify-center items-start mt-10'>
+      <Card className='w-full max-w-[600px]'>
+        <CardHeader>
+            <CardTitle className="text-2xl">Add New Website</CardTitle>
+            <CardDescription>
+                Enter your website domain to start tracking analytics (e.g., example.com)
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <div className='grid gap-5'>
+                <div className='grid gap-2'>
+                    <label className='font-semibold text-sm'>Domain Name</label>
+                    <Input 
+                        placeholder='https://example.com' 
+                        value={domain}
+                        onChange={(e)=>setDomain(e.target.value)}
+                    />
+                </div>
+                
+                <Button 
+                    onClick={onCreateWebsite} 
+                    disabled={loading}
+                    className='w-full'
+                >
+                    {loading && <Loader2 className='animate-spin mr-2 h-4 w-4' />}
+                    Create Website
+                </Button>
             </div>
-          ))}
-        </div>
-      )}
-
-      {!loading && websiteList.length === 0 && (
-        <div className="flex flex-col justify-center items-center gap-4 p-8 border-dashed border-2 border-gray-200 rounded-2xl mt-5">
-          <Image src="/website.png" alt="Website" width={100} height={100} />
-          <h2 className="text-gray-500">You don't have any websites added for tracking!</h2>
-          <Link href={"/dashboard/new"}>
-            <Button>+ Website</Button>
-          </Link>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 xl:grid-cols-3 mt-5">
-        {!loading &&
-          websiteList.map((website, index) => (
-            
-            <WebsiteCard key={index} websiteInfo={website} />
-          ))}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
 
-export default Dashboard
+export default AddNewWebsite

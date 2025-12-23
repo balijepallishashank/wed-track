@@ -1,8 +1,10 @@
-import { db } from "@/configs/db"; // Adjust path to your DB connection
-import { liveUserTable } from "@/configs/schema"; // Adjust path to your schema
+import { db } from "@/configs/db"; // Adjust path if needed (e.g., @/utils/db)
+import { liveUserTable } from "@/configs/schema"; // Adjust path if needed
 import { eq, gt, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import UAParser from "ua-parser-js";
+
+// 👇 FIX: Use named import with curly braces
+import { UAParser } from "ua-parser-js"; 
 
 export async function POST(req: NextRequest) {
     try {
