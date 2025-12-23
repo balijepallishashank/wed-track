@@ -17,9 +17,20 @@ type Props = {
 }
 
 function ScriptForm({ websiteId, domain }: Props) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Use env var, or fallback to window origin (browser), or default to localhost
+  const origin = typeof window !== "undefined" ? window.location.origin : ""
+  const hostUrl =
+    process.env.NEXT_PUBLIC_HOST_URL?.replace(/\/$/, "") || origin || "http://localhost:3000"
+
   const scriptCode = `
 <script 
-  src="${process.env.NEXT_PUBLIC_HOST_URL}/analytics.js"
+  src="${hostUrl}/analytics.js"
   data-website-id="${websiteId}"
   data-domain="${domain}"
   defer>
@@ -27,21 +38,28 @@ function ScriptForm({ websiteId, domain }: Props) {
 `.trim()
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(scriptCode)
-    toast.success("Script copied to clipboard")
+    if (!mounted) return
+
+    try {
+      await navigator.clipboard.writeText(scriptCode)
+      toast.success("Script copied to clipboard")
+    } catch (error) {
+      toast.error("Failed to copy script")
+    }
   }
 
   return (
-    <Card className="mt-6">
-      <CardContent className="p-5">
-        <h2 className="text-lg font-semibold mb-2">
-          Add Tracking Script
-        </h2>
-
-        <p className="text-sm text-muted-foreground mb-4">
-          Copy and paste this script inside the <code>&lt;head&gt;</code> tag of
-          your website.
-        </p>
+    <Card className="mt-6 w-full max-w-2xl mx-auto">
+      <CardContent className="p-6 flex flex-col gap-6">
+        <div className="space-y-2 text-center">
+          <h2 className="text-lg font-semibold">
+            Add Tracking Script
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Copy and paste this script inside the <code>&lt;head&gt;</code> tag of
+            your website.
+          </p>
+        </div>
 
         {/* SCRIPT CODE BOX */}
         <div className="relative">
@@ -62,6 +80,7 @@ function ScriptForm({ websiteId, domain }: Props) {
             size="icon"
             onClick={handleCopy}
             className="absolute top-2 right-2"
+            aria-label="Copy script to clipboard"
           >
             <Copy size={16} />
           </Button>
@@ -69,7 +88,7 @@ function ScriptForm({ websiteId, domain }: Props) {
 
         {/* ACTION BUTTON */}
         <Link href="/dashboard">
-          <Button className="w-full mt-6">
+          <Button className="w-full">
             Go to Dashboard
           </Button>
         </Link>

@@ -27,6 +27,9 @@ else{
 }
 
   const script = document.currentScript;
+  // Dynamically get the API host from the script's source URL
+  const scriptUrl = new URL(script.src);
+  const API_HOST = scriptUrl.origin;
 
   const websiteId = script.getAttribute("data-website-id");
   const domain = script.getAttribute("data-domain");
@@ -35,6 +38,10 @@ else{
   const referrer = document.referrer || 'Direct'
   //utm_sources
 const urlParams = new URLSearchParams(window.location.search);
+const queryParams = {};
+urlParams.forEach((value, key) => {
+  queryParams[key] = value;
+});
 const utm_source = urlParams.get('utm_source') || '';
 const utm_medium = urlParams.get('utm_medium') || '';
 const utm_campaign = urlParams.get('utm_campaign') || '';
@@ -49,7 +56,7 @@ const RefParama= window.location.href.split('?')[1] || '';
     referrer:referrer,
     url: window.location.href,
     visitorId:visitorId,
-    urlParams,
+    urlParams: queryParams,
     utm_source,
     utm_medium,
     utm_campaign,
@@ -57,7 +64,7 @@ const RefParama= window.location.href.split('?')[1] || '';
     
   };
 
-  fetch("http://localhost:3000/api/track", {
+  fetch(`${API_HOST}/api/track`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -81,7 +88,7 @@ const RefParama= window.location.href.split('?')[1] || '';
     const exitTime = Math.floor(Date.now() / 1000);
     totalActiveTime += (exitTime - activeStartTime);  // Fixed: Proper time difference calculation
     
-    fetch('http://localhost:3000/api/track', {
+    fetch(`${API_HOST}/api/track`, {
     method: 'POST',
     keepalive: true,
     headers: {
@@ -104,7 +111,7 @@ const RefParama= window.location.href.split('?')[1] || '';
 window.addEventListener('beforeunload', handleExit);
 
   const sendLivePing = () => {
-    fetch('http://localhost:3000/api/live', { 
+    fetch(`${API_HOST}/api/live`, { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
