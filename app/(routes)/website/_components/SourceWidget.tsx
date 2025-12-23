@@ -1,16 +1,10 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { AnalyticsType } from "@/configs/type"
 import React from "react"
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  XAxis,
-  YAxis,
-} from "recharts"
+  Card,
+  CardContent,
+} from "@/components/ui/card"
 import {
   Tabs,
   TabsContent,
@@ -23,31 +17,42 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import {
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Bar,
+  LabelList,
+} from "recharts"
 
 type Props = {
-  websiteAnalytics: AnalyticsType | undefined
+  websiteAnalytics: any
   loading: boolean
 }
 
-
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  countries: {
+    label: "Countries",
     color: "var(--chart-2)",
+  },
+  devices: {
+    label: "Devices",
+    color: "var(--chart-3)",
+  },
+  browsers: {
+    label: "Browsers",
+    color: "var(--chart-4)",
   },
 } satisfies ChartConfig
 
-/* ---------- LABEL WITH IMAGE + TEXT ---------- */
 const BarLabelWithImage = (props: any) => {
   const { x, y, height, payload } = props
   if (!payload) return null
-
   return (
     <g transform={`translate(${x + 8}, ${y + height / 2 - 8})`}>
-      {payload.image && (
-        <image href={payload.image} width={16} height={16} />
-      )}
-      <text x={22} y={12} fontSize={12} fill="#fff">
+      {payload.image && <image href={payload.image} width={16} height={16} />}
+      <text x={22} y={12} fontSize={12} fill="#ffffff">
         {payload.name}
       </text>
     </g>
@@ -55,13 +60,13 @@ const BarLabelWithImage = (props: any) => {
 }
 
 function SourceWidget({ websiteAnalytics, loading }: Props) {
-  if (loading || !websiteAnalytics) return null
+  if (loading) return null
 
   return (
     <div className="mt-5">
       <Card>
         <CardContent className="p-5">
-          <Tabs defaultValue="countries">
+          <Tabs defaultValue="countries" className="w-full">
             <TabsList>
               <TabsTrigger value="countries">Countries</TabsTrigger>
               <TabsTrigger value="devices">Devices</TabsTrigger>
@@ -70,13 +75,24 @@ function SourceWidget({ websiteAnalytics, loading }: Props) {
 
             {/* COUNTRIES */}
             <TabsContent value="countries">
-              <ChartContainer config={chartConfig} className="h-64">
-                <BarChart data={websiteAnalytics.countries} layout="vertical">
+              <ChartContainer config={chartConfig.countries} className="h-64 w-full">
+                <BarChart
+                  data={websiteAnalytics?.countries || []}
+                  layout="vertical"
+                  margin={{ right: 16 }}
+                >
                   <CartesianGrid horizontal={false} />
                   <YAxis type="category" hide />
                   <XAxis type="number" hide />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="visitors" radius={6} fill="var(--color-primary)">
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent />}
+                  />
+                  <Bar
+                    dataKey="visitors"
+                    radius={6}
+                    fill="var(--color-primary)"
+                  >
                     <LabelList content={<BarLabelWithImage />} />
                   </Bar>
                 </BarChart>
@@ -85,12 +101,19 @@ function SourceWidget({ websiteAnalytics, loading }: Props) {
 
             {/* DEVICES */}
             <TabsContent value="devices">
-              <ChartContainer config={chartConfig} className="h-64">
-                <BarChart data={websiteAnalytics.devices} layout="vertical">
+              <ChartContainer config={chartConfig.devices} className="h-64 w-full">
+                <BarChart
+                  data={websiteAnalytics?.devices || []}
+                  layout="vertical"
+                >
                   <CartesianGrid horizontal={false} />
                   <YAxis type="category" hide />
                   <XAxis type="number" hide />
-                  <Bar dataKey="visitors" radius={6} fill="var(--color-primary)">
+                  <Bar
+                    dataKey="visitors"
+                    radius={6}
+                    fill="var(--color-primary)"
+                  >
                     <LabelList content={<BarLabelWithImage />} />
                   </Bar>
                 </BarChart>
@@ -99,12 +122,19 @@ function SourceWidget({ websiteAnalytics, loading }: Props) {
 
             {/* BROWSERS */}
             <TabsContent value="browsers">
-              <ChartContainer config={chartConfig} className="h-64">
-                <BarChart data={websiteAnalytics.browsers} layout="vertical">
+              <ChartContainer config={chartConfig.browsers} className="h-64 w-full">
+                <BarChart
+                  data={websiteAnalytics?.browsers || []}
+                  layout="vertical"
+                >
                   <CartesianGrid horizontal={false} />
                   <YAxis type="category" hide />
                   <XAxis type="number" hide />
-                  <Bar dataKey="visitors" radius={6} fill="var(--color-primary)">
+                  <Bar
+                    dataKey="visitors"
+                    radius={6}
+                    fill="var(--color-primary)"
+                  >
                     <LabelList content={<BarLabelWithImage />} />
                   </Bar>
                 </BarChart>
