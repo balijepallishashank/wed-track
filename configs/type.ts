@@ -17,14 +17,19 @@ export type WebsiteInfoType={
 export type AnalyticsType = {
     avgActiveTime: number;
     totalActiveTime: number;
-    totalSessions: number; // Fixed typo (was 'totalSesstions')
+    totalSessions: number; 
     totalVisitors: number;
     hourlyVisitors: HourlyVisitorsType[];
+    dailyVisitors: DailyVisitorsType[];
 }
 
 export type HourlyVisitorsType = {
     count: number;
     date: string;
-    hour: number; // Fixed (was 'hours') to match your API response
+    hour: number; 
     hourLabel: string;
+}
+export type DailyVisitorsType={
+  date:string,
+  count:number
 }
