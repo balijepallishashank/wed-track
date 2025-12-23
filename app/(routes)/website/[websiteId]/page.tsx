@@ -11,6 +11,7 @@ import PageViewAnalytics from "./_components/PageViewAnalytics"
 import SourceWidget from "./_components/SourceWidget"
 import DeviceWidget from "./_components/DeviceWidget"
 import GeoWidget from "./_components/GeoWidget"
+import ScriptForm from "./_components/ScriptForm"
 
 // Type Imports
 import { LiveUserType, WebsiteType } from "@/configs/type"
@@ -40,9 +41,9 @@ function WebsiteDetail() {
 
   const GetWebsiteList = async () => {
     try {
-        const res = await axios.get(`/api/analytics?websiteId=${websiteId}&websiteOnly=true`);
-        setWebsiteList(res.data ? [res.data.website] : []); // Ensuring it handles the structure correctly
-        setWebsiteInfo(res.data);
+        const res = await axios.get(`/api/website?websiteId=${websiteId}&websiteOnly=true`);
+        const websiteData = res.data;
+        setWebsiteList(websiteData ? [websiteData] : []);
     } catch (e) {
         console.error("Error fetching website list:", e);
     }
@@ -52,6 +53,13 @@ function WebsiteDetail() {
   useEffect(() => {
     if(websiteId){
         loadAnalytics();
+        
+        // Auto-refresh analytics every 30 seconds
+        const interval = setInterval(() => {
+          loadAnalytics();
+        }, 30000);
+        
+        return () => clearInterval(interval);
     }
   }, [formData.fromDate, formData.toDate, formData.analyticType, websiteId])
 
@@ -65,6 +73,12 @@ function WebsiteDetail() {
             `/api/website?websiteId=${websiteId}&from=${from}&to=${to}`
         );
 
+        console.log("API Response:", res.data);
+        console.log("First item:", res.data?.[0]);
+        console.log("Analytics data:", res.data?.[0]?.analytics);
+        console.log("Hourly visitors:", res.data?.[0]?.analytics?.hourlyVisitors);
+        console.log("Daily visitors:", res.data?.[0]?.analytics?.dailyVisitors);
+        
         // The API returns an array, we take the first item
         setWebsiteInfo(res.data?.[0]);
         
@@ -80,7 +94,7 @@ function WebsiteDetail() {
   /* ---------- 3. Get Live Users ---------- */
   const GetLiveUsers = async () => {
      try {
-         const result = await axios.get('/api/live-visitor?websiteId=' + websiteId);
+         const result = await axios.get('/api/live?websiteId=' + websiteId);
          setLiveUser(result?.data);
      } catch (err) {
          console.error("Error loading live users:", err);
@@ -94,7 +108,14 @@ function WebsiteDetail() {
         setFormData={setFormData}
         setReloadData={loadAnalytics}
       />
+{websiteList.length > 0 && (
+        <ScriptForm 
+          websiteId={websiteList[0].websiteId} 
+          domain={websiteList[0].domain} 
+        />
+      )}
 
+      
       <PageViewAnalytics
         websiteInfo={websiteInfo}
         loading={loading}

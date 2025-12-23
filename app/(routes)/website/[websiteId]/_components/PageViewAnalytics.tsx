@@ -33,6 +33,13 @@ function PageViewAnalytics({
 }: Props) {
   const webAnalytics = websiteInfo?.analytics
 
+  console.log("PageViewAnalytics - websiteInfo:", websiteInfo);
+  console.log("PageViewAnalytics - webAnalytics:", webAnalytics);
+  console.log("PageViewAnalytics - analyticType:", analyticType);
+  console.log("PageViewAnalytics - Chart data:", 
+    analyticType === "hourly" ? webAnalytics?.hourlyVisitors : webAnalytics?.dailyVisitors
+  );
+
   return (
     <div className="mt-7">
       {!loading ? (

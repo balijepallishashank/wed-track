@@ -14,7 +14,8 @@ export type HourlyVisitorType = {
 }
 
 export type AnalyticsType = {
-  last24hVisitors: number
+  totalVisitors?: number
+  last24hVisitors?: number
   totalSessions: number
   totalActiveTime: number
   avgActiveTime: number

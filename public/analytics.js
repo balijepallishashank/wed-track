@@ -74,15 +74,16 @@ const RefParama= window.location.href.split('?')[1] || '';
 /**
  * ACTIVE TIME TRACKING
  */
- let activeStartTime=Math.floor(Date.now()/1000);
- let totalActiveTime=0;
+ let activeStartTime = Math.floor(Date.now() / 1000);
+ let totalActiveTime = 0;
  
- const handleExit=()=>{
-    const exitTime=Math.floor(Date.now()/1000);
-    totalActiveTime +=Math.floor(Date.now()/1000);-activeStartTime;
+ const handleExit = () => {
+    const exitTime = Math.floor(Date.now() / 1000);
+    totalActiveTime += (exitTime - activeStartTime);  // Fixed: Proper time difference calculation
+    
     fetch('http://localhost:3000/api/track', {
     method: 'POST',
-    keepalive:true,
+    keepalive: true,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -92,8 +93,8 @@ const RefParama= window.location.href.split('?')[1] || '';
         domain,
         exitTime: exitTime,
         totalActiveTime: totalActiveTime,
-        visitorId:visitorId,
-        exitUrl:window.location.href
+        visitorId: visitorId,
+        exitUrl: window.location.href
     })
 })
 //localStorage.clear();

@@ -2,7 +2,18 @@ import { db } from "@/configs/db";
 import { pageViewTable } from "@/configs/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { UAParser } from 'ua-parser-js';
-import { eq } from 'drizzle-orm'; // 👈 IMPORTANT: Don't forget this import!
+import { eq } from 'drizzle-orm';
+
+// CORS headers helper
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -53,16 +64,23 @@ export async function POST(req: NextRequest) {
 
   } 
   else {
+      // Validate totalActiveTime - cap at 24 hours (86400 seconds)
+      const maxActiveTime = 86400; // 24 hours in seconds
+      const activeTime = body.totalActiveTime > maxActiveTime ? maxActiveTime : body.totalActiveTime;
+      
       result = await db.update(pageViewTable)
         .set({
             exitTime: body.exitTime,
-            totalActiveTime: body.totalActiveTime,
-            exitUrl:body.exitUrl,
+            totalActiveTime: activeTime,
+            exitUrl: body.exitUrl,
         })
         .where(eq(pageViewTable.visitorId, body.visitorId))
         .returning();
   }
   console.log("Insert Result:",result);
 
-  return NextResponse.json({ message: "Data received successfully", data: result });
+  return NextResponse.json(
+    { message: "Data received successfully", data: result },
+    { headers: corsHeaders }
+  );
 }

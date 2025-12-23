@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Analytics Tracking</title>
+  
+  <!-- Analytics Script -->
+ <script 
+  src="http://localhost:3000/analytics.js"
+  data-website-id="ws_1766495621931_4r8j24g2n"
+  data-domain="http://127.0.0.1:5173"
+  defer>
+</script>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 { color: #333; }
+    nav {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+    }
+    .button:hover {
+      background: #0056b3;
+    }
+    .card {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    .active-page {
+      display: block;
+    }
+    .hidden-page {
+      display: none;
+    }
+    .breadcrumb {
+      background: #e9ecef;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <strong>Navigation:</strong>
+    <a href="#" onclick="showPage('home')">Home</a> |
+    <a href="#" onclick="showPage('about')">About</a> |
+    <a href="#" onclick="showPage('products')">Products</a> |
+    <a href="#" onclick="showPage('blog')">Blog</a> |
+    <a href="#" onclick="showPage('contact')">Contact</a> |
+    <a href="?utm_source=test&utm_medium=nav&utm_campaign=demo" onclick="showPage('promo')">Promo (with UTM)</a>
+  </nav>
+
+  <!-- Home Page -->
+  <div id="home" class="active-page">
+    <div class="breadcrumb">Home</div>
+    <h1>🏠 Analytics Tracking Test Page</h1>
+    
+    <div class="card">
+      <h2>Welcome!</h2>
+      <p>This is a test page to verify analytics tracking is working correctly.</p>
+      <p>Your page views, time spent, and interactions should be tracked.</p>
+      <button class="button" onclick="showPage('products')">View Products</button>
+      <button class="button" onclick="showPage('blog')">Read Blog</button>
+    </div>
+
+    <div class="card">
+      <h2>Test Navigation</h2>
+      <p>Click the navigation links above to simulate browsing different pages.</p>
+      <p>Each navigation will be tracked as activity on your analytics dashboard.</p>
+    </div>
+  </div>
+
+  <!-- About Page -->
+  <div id="about" class="hidden-page">
+    <div class="breadcrumb">Home > About</div>
+    <h1>📖 About Us</h1>
+    
+    <div class="card">
+      <h2>Our Mission</h2>
+      <p>This is the about page. Stay here for a few seconds to track time spent.</p>
+      <p>We're testing web analytics tracking to ensure everything works perfectly.</p>
+      <button class="button" onclick="showPage('contact')">Contact Us</button>
+      <button class="button" onclick="showPage('home')">Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Products Page -->
+  <div id="products" class="hidden-page">
+    <div class="breadcrumb">Home > Products</div>
+    <h1>🛍️ Our Products</h1>
+    
+    <div class="card">
+      <h3>Product 1 - Analytics Tool</h3>
+      <p>Track your website visitors in real-time.</p>
+      <button class="button" onclick="alert('Added to cart!')">Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Product 2 - Dashboard Pro</h3>
+      <p>Advanced analytics with custom reports.</p>
+      <button class="button" onclick="alert('Added to cart!')">Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Product 3 - API Access</h3>
+      <p>Integrate analytics into your own apps.</p>
+      <button class="button" onclick="alert('Added to cart!')">Add to Cart</button>
+    </div>
+
+    <button class="button" onclick="showPage('home')">Back to Home</button>
+  </div>
+
+  <!-- Blog Page -->
+  <div id="blog" class="hidden-page">
+    <div class="breadcrumb">Home > Blog</div>
+    <h1>📝 Blog Posts</h1>
+    
+    <div class="card">
+      <h3>How to Track Website Analytics</h3>
+      <p>Posted on December 23, 2025</p>
+      <p>Learn the best practices for implementing analytics on your website...</p>
+      <a href="#" class="button">Read More</a>
+    </div>
+
+    <div class="card">
+      <h3>Understanding User Behavior</h3>
+      <p>Posted on December 20, 2025</p>
+      <p>Discover insights about how users interact with your site...</p>
+      <a href="#" class="button">Read More</a>
+    </div>
+
+    <button class="button" onclick="showPage('home')">Back to Home</button>
+  </div>
+
+  <!-- Contact Page -->
+  <div id="contact" class="hidden-page">
+    <div class="breadcrumb">Home > Contact</div>
+    <h1>📧 Contact Us</h1>
+    
+    <div class="card">
+      <h2>Get in Touch</h2>
+      <form onsubmit="event.preventDefault(); alert('Form submitted!');">
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px;">Name:</label>
+          <input type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px;">Email:</label>
+          <input type="email" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px;">Message:</label>
+          <textarea style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" rows="4"></textarea>
+        </div>
+        <button type="submit" class="button">Send Message</button>
+      </form>
+    </div>
+
+    <button class="button" onclick="showPage('home')">Back to Home</button>
+  </div>
+
+  <!-- Promo Page -->
+  <div id="promo" class="hidden-page">
+    <div class="breadcrumb">Home > Special Promotion</div>
+    <h1>🎉 Special Offer!</h1>
+    
+    <div class="card">
+      <h2>Limited Time Deal</h2>
+      <p>This page was accessed with UTM parameters for campaign tracking!</p>
+      <p>Check your analytics to see the utm_source, utm_medium, and utm_campaign data.</p>
+      <button class="button" onclick="alert('Discount applied!')">Claim Offer</button>
+    </div>
+
+    <button class="button" onclick="showPage('home')">Back to Home</button>
+  </div>
+
+  <script>
+    // Page navigation simulation
+    function showPage(pageId) {
+      console.log('Navigating to:', pageId);
+      
+      // Hide all pages
+      document.querySelectorAll('[id]').forEach(page => {
+        if (['home', 'about', 'products', 'blog', 'contact', 'promo'].includes(page.id)) {
+          page.classList.remove('active-page');
+          page.classList.add('hidden-page');
+        }
+      });
+      
+      // Show selected page
+      const selectedPage = document.getElementById(pageId);
+      if (selectedPage) {
+        selectedPage.classList.remove('hidden-page');
+        selectedPage.classList.add('active-page');
+      }
+      
+      // Update URL without reload (simulates navigation)
+      window.history.pushState({page: pageId}, '', `#${pageId}`);
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+    
+    // Add some console logs to verify the script is loaded
+    console.log('Test page loaded');
+    
+    // Simulate some activity
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Page ready - analytics should be tracking');
+      
+      // Check for hash in URL
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        showPage(hash);
+      }
+    });
+  </script>
+</body>
+</html>

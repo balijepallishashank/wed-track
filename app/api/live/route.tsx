@@ -1,10 +1,19 @@
-import { db } from "@/configs/db"; // Adjust path if needed (e.g., @/utils/db)
-import { liveUserTable } from "@/configs/schema"; // Adjust path if needed
+import { db } from "@/configs/db";
+import { liveUserTable } from "@/configs/schema";
 import { eq, gt, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { UAParser } from "ua-parser-js";
 
-// 👇 FIX: Use named import with curly braces
-import { UAParser } from "ua-parser-js"; 
+// CORS headers helper
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -60,11 +69,14 @@ export async function POST(req: NextRequest) {
                 }
             });
 
-        return NextResponse.json({ status: "ok" });
+        return NextResponse.json({ status: "ok" }, { headers: corsHeaders });
         
     } catch (err: any) {
         console.error(err);
-        return NextResponse.json({ status: "error", message: err.message }, { status: 500 });
+        return NextResponse.json(
+            { status: "error", message: err.message },
+            { status: 500, headers: corsHeaders }
+        );
     }
 }
 
@@ -81,5 +93,5 @@ export async function GET(req: NextRequest) {
             eq(liveUserTable.websiteId, websiteId as string)
         ));
 
-    return NextResponse.json(activeUsers);
+    return NextResponse.json(activeUsers, { headers: corsHeaders });
 }

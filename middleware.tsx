@@ -1,12 +1,36 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 
 const isPublicRoute = createRouteMatcher([
     '/sign-in(.*)',
     '/sign-up(.*)',
-    '/'
+    '/',
+    '/api/track',
+    '/api/live',
 ])
 
 export default clerkMiddleware(async (auth, req) => {
+    // Handle CORS preflight requests
+    if (req.method === 'OPTIONS') {
+        return new NextResponse(null, {
+            status: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+        })
+    }
+
+    // Add CORS headers to API routes
+    if (req.nextUrl.pathname.startsWith('/api/track') || req.nextUrl.pathname.startsWith('/api/live')) {
+        const response = NextResponse.next()
+        response.headers.set('Access-Control-Allow-Origin', '*')
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        return response
+    }
+
     if (!isPublicRoute(req)) {
         await auth.protect()
     }

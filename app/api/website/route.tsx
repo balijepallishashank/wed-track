@@ -256,9 +256,11 @@ export async function GET(req: NextRequest) {
 
         const hourlyVisitors = Object.entries(hourlyMap).map(([key, set]) => {
              const [date, hour] = key.split('-');
+             const hourNum = Number(hour);
              return {
                  date,
-                 hour: Number(hour),
+                 hour: hourNum,
+                 hourLabel: `${hourNum.toString().padStart(2, '0')}:00`,
                  count: set.size
              }
         });
@@ -308,6 +310,39 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(result);
+}
+
+export async function POST(req: NextRequest) {
+    const user = await currentUser();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const body = await req.json();
+        const { domain } = body;
+
+        if (!domain) {
+            return NextResponse.json({ error: "Domain is required" }, { status: 400 });
+        }
+
+        // Generate a unique website ID
+        const websiteId = `ws_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        // Create the website
+        const result = await db.insert(websitesTable).values({
+            websiteId,
+            domain,
+            timeZone: "UTC", // Default timezone, can be updated later
+            enableLocalhostTracking: false,
+            userEmail: user.primaryEmailAddress!.emailAddress
+        }).returning();
+
+        return NextResponse.json(result[0], { status: 201 });
+    } catch (error) {
+        console.error("Error creating website:", error);
+        return NextResponse.json({ error: "Failed to create website" }, { status: 500 });
+    }
 }
 
 export async function DELETE(req: Request) {
