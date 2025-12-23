@@ -10,6 +10,7 @@ import PageViewAnalytics from "../_components/PageViewAnalytics"
 import { WebsiteType } from "@/configs/type"
 import { WebsiteInfoType } from "@/app/api/website/route"
 import { format } from "date-fns"
+import SourceWidget from "../_components/SourceWidget"
 
 function WebsiteDetail() {
   const { websiteId } = useParams()
@@ -60,7 +61,7 @@ function WebsiteDetail() {
       <FormInput
         websiteList={websiteList}
         setFormData={setFormData}
-        setReloadData={GetWebsiteAnalyticalDetail}
+        setReloadData={() => GetWebsiteAnalyticalDetail}
       />
 
       <PageViewAnalytics
@@ -68,7 +69,19 @@ function WebsiteDetail() {
         loading={loading}
         analyticType={formData.analyticType}
       />
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mt-5'>
+
+   <SourceWidget websiteAnalytics={websiteInfo?.analytics}
+  loading={loading}
+/>
+
+
     </div>
+    
+    
+    </div>
+
+
   )
 }
 
