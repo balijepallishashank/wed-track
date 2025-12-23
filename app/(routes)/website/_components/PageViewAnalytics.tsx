@@ -16,6 +16,7 @@ type Props = {
   websiteInfo: WebsiteInfoType | undefined | null
   loading?: boolean
   analyticType: string
+  liveUserCount:number
 }
 
 const chartConfig = {
@@ -28,7 +29,7 @@ const chartConfig = {
 function PageViewAnalytics({
   websiteInfo,
   loading,
-  analyticType,
+  analyticType,liveUserCount
 }: Props) {
   const webAnalytics = websiteInfo?.analytics
 
@@ -66,7 +67,7 @@ function PageViewAnalytics({
             />
             <Separator orientation="vertical" className="h-12" />
 
-            <LabelCountItem label="Live Users" value={5} />
+            <LabelCountItem label="Live Users" value={liveUserCount ?? 0} />
           </CardContent>
 
           {/* CHART */}
