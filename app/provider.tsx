@@ -4,11 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import React, { useEffect, useRef } from "react";
 
-function Provider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function Provider({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();
   const hasRun = useRef(false);
 

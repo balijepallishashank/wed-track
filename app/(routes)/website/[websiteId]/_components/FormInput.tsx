@@ -13,7 +13,7 @@ import {
 import { WebsiteType } from "@/configs/type"
 import { useParams, useRouter } from "next/navigation"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon, RefreshCcw, Settings } from "lucide-react"
+import { Calendar as CalendarIcon, Link, RefreshCcw, Settings } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
 import { Button } from "@/components/ui/button"
@@ -147,10 +147,11 @@ function FormInput({ websiteList, setFormData, setReloadData }: Props) {
           <RefreshCcw />
         </Button>
       </div>
-
+      <Link href={'/dashboard/website/'+websiteId+'/settings'}>
       <Button variant="outline">
         <Settings />
       </Button>
+      </Link>
     </div>
   )
 }
