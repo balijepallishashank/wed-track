@@ -8,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Globe } from "lucide-react"
+import { Globe, Link } from "lucide-react"
 import React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
@@ -27,6 +27,7 @@ function WebsiteCard({ websiteInfo }: Props) {
   const chartData = websiteInfo.analytics.hourlyVisitors
 
   return (
+    <Link href={'/dashboard/website/'+websiteInfo?.website?.websiteId}>
     <Card>
       <CardHeader>
         <CardTitle>
@@ -76,6 +77,7 @@ function WebsiteCard({ websiteInfo }: Props) {
         </h2>
       </CardContent>
     </Card>
+    </Link>
   )
 }
 
